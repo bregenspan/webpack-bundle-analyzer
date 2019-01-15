@@ -6,8 +6,8 @@ const gzipSize = require('gzip-size');
 
 const Logger = require('./Logger');
 const Folder = require('./tree/Folder').default;
-const {parseBundle} = require('./parseUtils');
-const {createAssetsFilter} = require('./utils');
+const { parseBundle } = require('./parseUtils');
+const { createAssetsFilter } = require('./utils');
 
 const FILENAME_QUERY_REGEXP = /\?.*$/;
 
@@ -89,11 +89,9 @@ function getViewerData(bundleStats, bundleDir, opts) {
 
     asset.tree = createModulesTree(asset.modules);
 
-    const parentChunks = _.flatten(statAsset.chunks.map(chunkId => bundleStats.chunks[chunkId].parents));
-    const parentAssetNames = bundleStats.assets
-      .filter(asset => asset.chunks.some(chunk => parentChunks.includes(chunk)))
-      .map(asset => asset.name);
-    asset.parentAssetNames = parentAssetNames;
+    asset.parentAssetNames = getParentAssets(statAsset, bundleStats).map(
+      asset => asset.name
+    );
   }, {});
 
   return _.transform(assets, (result, asset, filename) => {
@@ -126,6 +124,16 @@ function getBundleModules(bundleStats) {
     .flatten()
     .uniqBy('id')
     .value();
+}
+
+function getParentAssets(statAsset, bundleStats) {
+  // Get asset objects corresponding to parent bundles of the specified asset
+  const parentChunks = _.flatten(
+    statAsset.chunks.map(chunkId => bundleStats.chunks[chunkId].parents)
+  );
+  return bundleStats.assets.filter(asset =>
+    asset.chunks.some(chunk => parentChunks.includes(chunk))
+  );
 }
 
 function assetHasModule(statAsset, statModule) {
