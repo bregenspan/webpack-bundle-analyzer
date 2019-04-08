@@ -1,7 +1,6 @@
 /** @jsx h */
 import {h, Component} from 'preact';
 import FoamTree from 'carrotsearch.foamtree';
-import {isSecondaryInteractionEvent} from '../utils';
 
 export default class Treemap extends Component {
 
@@ -92,7 +91,7 @@ export default class Treemap extends Component {
       },
       onGroupClick(event) {
         preventDefault(event);
-        if (isSecondaryInteractionEvent(event) && props.onGroupSecondaryClick) {
+        if ((event.ctrlKey || event.secondary) && props.onGroupSecondaryClick) {
           props.onGroupSecondaryClick.call(component, event);
           return;
         }
