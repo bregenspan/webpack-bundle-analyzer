@@ -4,7 +4,7 @@ import cls from 'classnames';
 import ContextMenuItem from './ContextMenuItem';
 import PureComponent from '../lib/PureComponent';
 import {store} from '../store';
-import {elementIsOutside} from '../utils';
+import {elementIsOutside, isSecondaryInteractionEvent} from '../utils';
 
 import s from './ContextMenu.css';
 
@@ -71,7 +71,7 @@ export default class ContextMenu extends PureComponent {
   }
 
   handleDocumentMousedown = (e) => {
-    if (elementIsOutside(e.target, this.node)) {
+    if (!isSecondaryInteractionEvent(e) && elementIsOutside(e.target, this.node)) {
       e.preventDefault();
       e.stopPropagation();
       this.hide();
