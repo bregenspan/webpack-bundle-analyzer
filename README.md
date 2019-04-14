@@ -165,6 +165,7 @@ The Chunk Context Menu can be opened by right-clicking or `Ctrl`-clicking on a s
 
  * **Hide chunk:** Hides the selected chunk
  * **Hide all other chunks:** Hides all chunks besides the selected one
+ * **Show parent chunks:** Filters down to show only the chunk and its parent chunks
  * **Show all chunks:** Un-hides any hidden chunks, returning the report to its initial, unfiltered view
 
 <h2 align="center">Troubleshooting</h2>

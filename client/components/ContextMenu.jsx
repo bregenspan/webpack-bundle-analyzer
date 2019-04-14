@@ -38,6 +38,9 @@ export default class ContextMenu extends PureComponent {
           onClick={this.handleClickFilterToChunk}>
           Hide all other chunks
         </ContextMenuItem>
+        <ContextMenuItem onClick={this.handleClickFilterToParents}>
+          Show parent chunks
+        </ContextMenuItem>
         <hr/>
         <ContextMenuItem disabled={store.allChunksSelected}
           onClick={this.handleClickShowAllChunks}>
@@ -60,6 +63,16 @@ export default class ContextMenu extends PureComponent {
     const {chunk: selectedChunk} = this.props;
     if (selectedChunk && selectedChunk.label) {
       const filteredChunks = store.allChunks.filter(chunk => chunk.label === selectedChunk.label);
+      store.selectedChunks = filteredChunks;
+    }
+    this.hide();
+  }
+
+  handleClickFilterToParents = () => {
+    const {chunk: selectedChunk} = this.props;
+    if (selectedChunk && selectedChunk.parentAssetNames) {
+      const groupAndParentAssets = [selectedChunk.label, ...selectedChunk.parentAssetNames];
+      const filteredChunks = store.allChunks.filter(chunk => groupAndParentAssets.includes(chunk.label));
       store.selectedChunks = filteredChunks;
     }
     this.hide();
