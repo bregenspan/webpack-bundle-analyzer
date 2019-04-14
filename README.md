@@ -168,6 +168,31 @@ The Chunk Context Menu can be opened by right-clicking or `Ctrl`-clicking on a s
  * **Show parent chunks:** Filters down to show only the chunk and its parent chunks
  * **Show all chunks:** Un-hides any hidden chunks, returning the report to its initial, unfiltered view
 
+<h2 align="center" id="glossary">Glossary</h2>
+
+(TODO: determine where this belongs and if it's the best way of documenting
+chunk graph relationships. Also, whether it's ultimately correct to treat
+[Chunk Groups](https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366) as an implementation detail that's not necessary to cover here)
+
+### Chunk
+
+(See: https://webpack.js.org/glossary/#c)
+
+### Chunk (Entry)
+
+A chunk corresponding to an [Entry Point](https://webpack.js.org/concepts/entry-points/). A root node in the chunk graph.
+
+### Chunk (Child)
+
+A chunk that is loaded by an Entry Chunk or another child chunk.
+In projects where a chunk graph is simple and tree-like, this will look a lot
+like an edge node.
+
+### Chunk (Parent)
+
+The parent chunk of a child chunk - the child chunk contains dependencies of
+the parent.
+
 <h2 align="center">Troubleshooting</h2>
 
 ### I don't see `gzip` or `parsed` sizes, it only shows `stat` size
