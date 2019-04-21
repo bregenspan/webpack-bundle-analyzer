@@ -311,6 +311,8 @@ export default class ModulesTreemap extends Component {
   getTooltipContent(module) {
     if (!module) return null;
 
+    const parentAssets = (module.parentAssetNames && module.parentAssetNames.length) ? module.parentAssetNames.join(', ') : '';
+
     return (
       <div>
         <div><strong>{module.label}</strong></div>
@@ -321,8 +323,12 @@ export default class ModulesTreemap extends Component {
         {module.path &&
           <div>Path: <strong>{module.path}</strong></div>
         }
+
         {module.isAsset &&
           <div>
+            {parentAssets &&
+              <div>Parent Chunks: <strong>{parentAssets}</strong></div>
+            }
             <br/>
             <strong><em>Right-click to view options related to this chunk</em></strong>
           </div>
