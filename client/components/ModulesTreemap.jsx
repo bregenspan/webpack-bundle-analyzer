@@ -1,5 +1,5 @@
 /** @jsx h */
-import {h, Component} from 'preact';
+import {h, Component, Fragment} from 'preact';
 import filesize from 'filesize';
 import {computed} from 'mobx';
 import {observer} from 'mobx-preact';
@@ -18,6 +18,7 @@ import s from './ModulesTreemap.css';
 import Search from './Search';
 import {store} from '../store';
 import ModulesList from './ModulesList';
+import ModulesTreemapTooltip from './ModulesTreemapTooltip';
 
 const SIZE_SWITCH_ITEMS = [
   {label: 'Stat', prop: 'statSize'},
@@ -311,30 +312,16 @@ export default class ModulesTreemap extends Component {
   getTooltipContent(module) {
     if (!module) return null;
 
-    const parentAssets = (module.parentAssetNames && module.parentAssetNames.length) ? module.parentAssetNames.join(', ') : '';
-
     return (
-      <div>
-        <div><strong>{module.label}</strong></div>
-        <br/>
-        {this.renderModuleSize(module, 'stat')}
-        {!module.inaccurateSizes && this.renderModuleSize(module, 'parsed')}
-        {!module.inaccurateSizes && this.renderModuleSize(module, 'gzip')}
-        {module.path &&
-          <div>Path: <strong>{module.path}</strong></div>
-        }
-
-        {module.isAsset &&
-          <div>
-            {parentAssets &&
-              <div>Parent Chunks: <strong>{parentAssets}</strong></div>
-            }
-            <br/>
-            <strong><em>Right-click to view options related to this chunk</em></strong>
-          </div>
-        }
-      </div>
+      <ModulesTreemapTooltip module={module}
+        renderModuleSize={() => (
+          <Fragment>
+            {this.renderModuleSize(module, 'stat')}
+            {!module.inaccurateSizes && this.renderModuleSize(module, 'parsed')}
+            {!module.inaccurateSizes && this.renderModuleSize(module, 'gzip')}
+          </Fragment>
+        )
+        }/>
     );
   }
-
 }

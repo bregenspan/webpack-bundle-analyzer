@@ -93,6 +93,9 @@ function getViewerData(bundleStats, bundleDir, opts) {
     asset.parentAssetNames = getParentAssets(statAsset, bundleStats).map(
       asset => asset.name
     );
+
+    asset.chunkMetadata = getChunkMetadata(statAsset, bundleStats);
+    console.log(JSON.stringify(asset.chunkMetadata));
   }, {});
 
   return _.transform(assets, (result, asset, filename) => {
@@ -107,6 +110,7 @@ function getViewerData(bundleStats, bundleDir, opts) {
       parsedSize: asset.parsedSize,
       gzipSize: asset.gzipSize,
       groups: _.invokeMap(asset.tree.children, 'toChartData'),
+      chunkMetadata: asset.chunkMetadata,
       parentAssetNames: asset.parentAssetNames
     });
   }, []);
@@ -116,6 +120,24 @@ function readStatsFromFile(filename) {
   return JSON.parse(
     fs.readFileSync(filename, 'utf8')
   );
+}
+
+function getChunkMetadata(statAsset, bundleStats) {
+  if (!statAsset.chunks.length) {
+    return null;
+  }
+  if (statAsset.chunks.length > 1) {
+    // Multiple chunks in asset.
+    // That means we can't easily describe the asset
+    // in terms of its chunk's metadata; bail out
+    // in this case.
+    // TODO: determine circumstances when this case is possible
+    return null;
+  }
+  const chunkId = statAsset.chunks[0];
+  const chunk = _.find(bundleStats.chunks, {id: chunkId});
+  const {entry, initial} = chunk;
+  return {entry, initial};
 }
 
 function getBundleModules(bundleStats) {

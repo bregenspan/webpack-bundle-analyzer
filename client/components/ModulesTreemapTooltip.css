@@ -1,0 +1,28 @@
+.itemMetadata {
+    margin: 10px 0;
+}
+
+.itemTypeChunk, .itemTypeModule, .flagEntry, .flagInitial {
+    padding: 2px 4px;
+    margin: 2px 2px 2px 0;
+}
+
+.itemTypeChunk {
+    border: 1px #000 solid;
+}
+
+.itemTypeModule {
+    border: 1px #000 solid;
+}
+
+.flagEntry {
+    border-radius: 3px;
+    background: #000;
+    color: #fff;
+}
+
+.flagInitial {
+    border-radius: 3px;
+    background: #000;
+    color: #fff;
+}
