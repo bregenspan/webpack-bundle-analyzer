@@ -1,5 +1,5 @@
 /** @jsx h */
-import {h, Component, Fragment} from 'preact';
+import {h, Component} from 'preact';
 import filesize from 'filesize';
 import {computed} from 'mobx';
 import {observer} from 'mobx-preact';
@@ -315,11 +315,11 @@ export default class ModulesTreemap extends Component {
     return (
       <ModulesTreemapTooltip module={module}
         renderModuleSize={() => (
-          <Fragment>
+          <div>
             {this.renderModuleSize(module, 'stat')}
             {!module.inaccurateSizes && this.renderModuleSize(module, 'parsed')}
             {!module.inaccurateSizes && this.renderModuleSize(module, 'gzip')}
-          </Fragment>
+          </div>
         )
         }/>
     );

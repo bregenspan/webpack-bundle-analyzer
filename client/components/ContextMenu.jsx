@@ -22,7 +22,8 @@ export default class ContextMenu extends PureComponent {
   }
 
   render() {
-    const {visible} = this.props;
+    const {visible,chunk} = this.props;
+    const chunkRelations = chunk ? chunk.relations : null;
     const containerClassName = cls({
       [s.container]: true,
       [s.hidden]: !visible
@@ -38,8 +39,13 @@ export default class ContextMenu extends PureComponent {
           onClick={this.handleClickFilterToChunk}>
           Hide all other chunks
         </ContextMenuItem>
-        <ContextMenuItem onClick={this.handleClickFilterToParents}>
+        <ContextMenuItem disabled={!chunkRelations || !chunkRelations.parents.length}
+          onClick={() => this.handleClickFilterToRelations('parents')}>
           Show parent chunks
+        </ContextMenuItem>
+        <ContextMenuItem disabled={!chunkRelations || !chunkRelations.siblings.length}
+          onClick={() => this.handleClickFilterToRelations('siblings')}>
+          Show sibling chunks
         </ContextMenuItem>
         <hr/>
         <ContextMenuItem disabled={store.allChunksSelected}
@@ -68,11 +74,11 @@ export default class ContextMenu extends PureComponent {
     this.hide();
   }
 
-  handleClickFilterToParents = () => {
+  handleClickFilterToRelations = (relation) => {
     const {chunk: selectedChunk} = this.props;
-    if (selectedChunk && selectedChunk.parentAssetNames) {
-      const groupAndParentAssets = [selectedChunk.label, ...selectedChunk.parentAssetNames];
-      const filteredChunks = store.allChunks.filter(chunk => groupAndParentAssets.includes(chunk.label));
+    if (selectedChunk && selectedChunk.relations && selectedChunk.relations[relation]) {
+      const groupAndRelatedAssets = [selectedChunk.label, ...selectedChunk.relations[relation]];
+      const filteredChunks = store.allChunks.filter(chunk => groupAndRelatedAssets.includes(chunk.label));
       store.selectedChunks = filteredChunks;
     }
     this.hide();

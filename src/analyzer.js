@@ -90,9 +90,14 @@ function getViewerData(bundleStats, bundleDir, opts) {
 
     asset.tree = createModulesTree(asset.modules);
 
-    asset.parentAssetNames = getParentAssets(statAsset, bundleStats).map(
-      asset => asset.name
-    );
+    asset.relations = {
+      parents: getParentAssets(statAsset, bundleStats).map(
+        asset => asset.name
+      ),
+      siblings: getSiblingAssets(statAsset, bundleStats).map(
+        asset => asset.name
+      )
+    };
 
     asset.chunkMetadata = getChunkMetadata(statAsset, bundleStats);
     console.log(JSON.stringify(asset.chunkMetadata));
@@ -111,7 +116,7 @@ function getViewerData(bundleStats, bundleDir, opts) {
       gzipSize: asset.gzipSize,
       groups: _.invokeMap(asset.tree.children, 'toChartData'),
       chunkMetadata: asset.chunkMetadata,
-      parentAssetNames: asset.parentAssetNames
+      relations: asset.relations
     });
   }, []);
 }
@@ -150,16 +155,28 @@ function getBundleModules(bundleStats) {
     .value();
 }
 
-function getParentAssets(statAsset, bundleStats) {
-  // Get asset objects corresponding to parent chunks of the specified asset
-  const parentChunks = _(statAsset.chunks)
+/**
+ * @param {object} statAsset
+ * @param {object} bundleStats
+ * @param {'parents'|'siblings'} relation
+ */
+function getRelatedAssets(statAsset, bundleStats, relation) {
+  const relatedChunks = _(statAsset.chunks)
     .map(chunkId => _.find(bundleStats.chunks, {id: chunkId}))
-    .map('parents')
+    .map(relation)
     .flatten()
     .value();
   return bundleStats.assets.filter(asset =>
-    asset.chunks.some(chunk => parentChunks.includes(chunk))
+    asset.chunks.some(chunk => relatedChunks.includes(chunk))
   );
+}
+
+function getParentAssets(statAsset, bundleStats) {
+  return getRelatedAssets(statAsset, bundleStats, 'parents');
+}
+
+function getSiblingAssets(statAsset, bundleStats) {
+  return getRelatedAssets(statAsset, bundleStats, 'siblings');
 }
 
 function assetHasModule(statAsset, statModule) {

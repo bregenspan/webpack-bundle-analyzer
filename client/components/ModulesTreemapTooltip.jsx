@@ -5,10 +5,7 @@ import s from './ModulesTreemapTooltip.css';
 
 class ModulesTreemapTooltip extends PureComponent {
   render({module, renderModuleSize}) {
-    const parentAssets =
-      module.parentAssetNames && module.parentAssetNames.length
-        ? module.parentAssetNames.join(', ')
-        : '';
+    const assetRelations = module.relations || null;
 
     return (
       <div>
@@ -33,13 +30,14 @@ class ModulesTreemapTooltip extends PureComponent {
           </div>
         )}
 
-        {module.isAsset && (
+        {module.isAsset && assetRelations && (
           <div>
-            {parentAssets && (
-              <div>
-              Parent Chunks: <strong>{parentAssets}</strong>
-              </div>
-            )}
+            <div>
+            # Parent Chunks: <strong>{assetRelations.parents.length}</strong>
+            </div>
+            <div>
+            # Sibling Chunks: <strong>{assetRelations.siblings.length}</strong>
+            </div>
             <br/>
             <strong>
               <em>Right-click to view options related to this chunk</em>
